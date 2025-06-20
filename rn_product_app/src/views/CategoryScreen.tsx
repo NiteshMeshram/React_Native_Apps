@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react
 import { useNavigation } from "@react-navigation/native";
 import { useCategoryViewModel } from "../viewmodels/CategoryViewModel";
 import { Category } from "../models/Category";
+import RemoteImage from "../components/RemoteImage";
 
 const CategoryScreen = () => {
   const { categories, loading } = useCategoryViewModel();
@@ -13,7 +14,13 @@ const CategoryScreen = () => {
       style={styles.card}
       onPress={() => navigation.navigate("Product", { categoryId: item.id })}
     >
-      <Image source={{ uri: item.imageUrl }} style={styles.image} />
+
+      <RemoteImage
+        uri={item.image}
+        style={{ width: 80, height: 80, borderRadius: 8 }}
+        resizeMode="cover"
+
+      />
       <View style={styles.textContainer}>
         <Text style={styles.id}>{item.id}</Text>
         <Text style={styles.name}>{item.name}</Text>
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   image: { width: 60, height: 60, borderRadius: 10, marginRight: 12 },
-  textContainer: { flex: 1 },
+  textContainer: { flex: 1, paddingLeft: 10, },
   id: { fontWeight: "600", fontSize: 16 },
   name: { fontSize: 18, fontWeight: "bold" },
   arrow: { fontSize: 24, color: "#999" },

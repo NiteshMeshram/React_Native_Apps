@@ -2,7 +2,7 @@
 
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-const BASE_URL = "https://your-api-domain.com/api"; // Replace with your actual API base
+const BASE_URL = "https://api.escuelajs.co/api/v1/"; // Replace with your actual API base
 
 class NetworkManager {
   private axiosInstance = axios.create({
@@ -16,6 +16,7 @@ class NetworkManager {
   // Generic GET request
   async get<T>(endpoint: string, params?: object): Promise<T> {
     try {
+      console.log(`Fetching from: ${BASE_URL}${endpoint}`, params ? `with params: ${JSON.stringify(params)}` : "");
       const response: AxiosResponse<T> = await this.axiosInstance.get(endpoint, { params });
       return response.data;
     } catch (error) {
@@ -55,12 +56,16 @@ class NetworkManager {
       throw error;
     }
   }
+  
 
   // Centralized error handling
   private handleError(error: any): void {
     console.error("Network Error:", error?.response?.data || error.message);
     // Optional: Add error tracking/logging here (e.g., Sentry)
   }
+  
 }
 
 export default new NetworkManager();
+
+

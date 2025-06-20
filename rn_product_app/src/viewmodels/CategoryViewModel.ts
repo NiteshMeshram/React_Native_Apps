@@ -1,23 +1,24 @@
+// src/viewmodels/useCategoryViewModel.ts
+
 import { useEffect, useState } from "react";
 import { Category } from "../models/Category";
+import NetworkManager from "../network/NetworkManager";
+import { ApiEndpoints } from "../network/ApiEndpoints";
+import { storeCategories, getCachedCategories } from '../services/categoryStorage';
+import { useCachedApiData } from "../services/useCachedApiData";
+
 
 export const useCategoryViewModel = () => {
-    const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setCategories([
-        { id: 1, name: "Clothes-234", imageUrl: "https://via.placeholder.com/100x100.png?text=Clothes" },
-        { id: 2, name: "Electronics", imageUrl: "https://via.placeholder.com/100x100.png?text=Electronics" },
-        { id: 3, name: "Furniture", imageUrl: "https://via.placeholder.com/100x100.png?text=Furniture" },
-        { id: 4, name: "Shoes", imageUrl: "https://via.placeholder.com/100x100.png?text=Shoes" },
-        { id: 5, name: "Miscellaneous", imageUrl: "https://via.placeholder.com/100x100.png?text=Misc" },
-      ]);
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const fetchCategoriesFromAPI = async (): Promise<Category[]> => {
+    return await NetworkManager.get<Category[]>(ApiEndpoints.GET_CATEGORIES);
+  };
+  
+    const { data: categories, loading, error } = useCachedApiData<Category[]>(
+    'categories',
+    fetchCategoriesFromAPI,
+    { cacheTimeInMs: 1000 * 60 * 30 } // 30 mins
+  );
 
-  return { categories, loading };
-}
+  return { categories: categories ?? [], loading, error };
+};
